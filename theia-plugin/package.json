@@ -12,10 +12,7 @@
       ],
       "devDependencies": {
         "@theia/plugin": "next",
-        "@theia/plugin-packager": "latest",
-        "rimraf": "2.6.2",
-        "typescript-formatter": "7.2.2",
-        "typescript": "2.9.2"
+    	"@theia/plugin-packager": "latest"
       },
       "scripts": {
         "prepare": "yarn run clean && yarn run build",
@@ -29,9 +26,6 @@
         "theiaPlugin": "next"
       },
       "theiaPlugin": {
-          
-          
             "backend": "lib/theia-plugin-backend.js"
-          
       }
 }
