@@ -7,7 +7,7 @@
             "webworker"
         ],
         "baseUrl": "src",
-        "outDir": "lib"
+        "outDir": "out"
     },
     "include": [
         "src"
