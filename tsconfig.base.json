@@ -7,7 +7,6 @@
 		"lib": [
 			"es6"
 		],
-		"outDir": "out",
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"target": "es6",

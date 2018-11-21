@@ -17,7 +17,7 @@
 	},
 	"scripts": {
 		"prepare": "yarn run clean && yarn run build",
-		"clean": "rimraf out",
+		"clean": "rimraf lib",
 		"format-code": "tsfmt -r",
 		"watch": "tsc -watch",
 		"compile": "tsc",
@@ -27,6 +27,6 @@
 		"theiaPlugin": "next"
 	},
 	"theiaPlugin": {
-		"backend": "out/theia-plugin-backend.js"
+		"backend": "lib/theia-plugin-backend.js"
 	}
 }

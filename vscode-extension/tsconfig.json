@@ -2,5 +2,12 @@
     "extends": "../tsconfig.base",
     "exclude": [
         ".vscode-test"
+    ],
+    "compilerOptions": {
+        "baseUrl": "src",
+        "outDir": "out"
+    },
+    "include": [
+        "src"
     ]
 }

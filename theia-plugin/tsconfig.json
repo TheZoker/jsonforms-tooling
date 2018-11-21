@@ -5,6 +5,11 @@
         "lib": [
             "es6",
             "webworker"
-        ]
-    }
+        ],
+        "baseUrl": "src",
+        "outDir": "lib"
+    },
+    "include": [
+        "src"
+    ]
 }

@@ -1,3 +1,10 @@
 {
-    "extends": "../tsconfig.base"
+  "extends": "../tsconfig.base",
+  "compilerOptions": {
+    "outDir": "out",
+    "sourceMap": true
+  },
+  "include": [
+    "src"
+  ]
 }
