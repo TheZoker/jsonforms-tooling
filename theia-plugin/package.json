@@ -1,33 +1,32 @@
 {
-	"name": "jsonforms-tooling-theia",
-	"description": "",
-	"version": "0.0.1",
-	"publisher": "EclipseSource",
-	"license": "MIT",
-	"keywords": [
-		"theia-plugin"
-	],
-	"files": [
-		"src"
-	],
-	"devDependencies": {
-		"@theia/plugin": "next",
-        "@theia/plugin-packager": "latest",
-        "rimraf": "2.6.2",
-        "typescript": "2.9.2"
-	},
-	"scripts": {
-		"prepare": "yarn run clean && yarn run build",
-		"clean": "rimraf lib",
-		"format-code": "tsfmt -r",
-		"watch": "tsc -watch",
-		"compile": "tsc",
-		"build": "yarn run format-code && yarn run compile && theia:plugin pack"
-	},
-	"engines": {
-		"theiaPlugin": "next"
-	},
-	"theiaPlugin": {
-		"backend": "lib/theia-plugin-backend.js"
-	}
+  "name": "jsonforms-tooling-theia",
+  "description": "",
+  "version": "0.0.1",
+  "publisher": "EclipseSource",
+  "license": "MIT",
+  "keywords": [
+    "theia-plugin"
+  ],
+  "files": [
+    "src"
+  ],
+  "devDependencies": {
+    "@theia/plugin": "next",
+    "@theia/plugin-packager": "latest",
+    "rimraf": "2.6.2"
+  },
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf out",
+    "format-code": "tsfmt -r",
+    "watch": "tsc -watch",
+    "compile": "tsc -p ./",
+    "build": "yarn run compile && theia:plugin pack"
+  },
+  "engines": {
+    "theiaPlugin": "next"
+  },
+  "theiaPlugin": {
+    "backend": "out/extension.js"
+  }
 }

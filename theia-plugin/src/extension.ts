@@ -13,7 +13,6 @@ export function start(context: theia.PluginContext) {
   context.subscriptions.push(theia.commands.registerCommand(informationMessageTestCommand, (...args: any[]) => {
     theia.window.showInformationMessage('Hello World!');
   }));
-
 }
 
 export function stop() {
