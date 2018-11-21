@@ -16,12 +16,12 @@
     "rimraf": "2.6.2"
   },
   "scripts": {
-    "prepare": "yarn run clean && yarn run build",
+    "prepare": "npm run clean && npm run build",
     "clean": "rimraf out",
     "format-code": "tsfmt -r",
     "watch": "tsc -watch",
     "compile": "tsc -p ./",
-    "build": "yarn run compile && theia:plugin pack"
+    "build": "npm run compile && theia:plugin pack"
   },
   "engines": {
     "theiaPlugin": "next"
