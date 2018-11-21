@@ -1,11 +1,12 @@
 {
-	"name": "theia-plugin",
-	"publisher": "theia",
+	"name": "jsonforms-tooling-theia",
+	"description": "",
+	"version": "0.0.1",
+	"publisher": "EclipseSource",
+	"license": "MIT",
 	"keywords": [
 		"theia-plugin"
 	],
-	"version": "0.0.1",
-	"license": "none",
 	"files": [
 		"src"
 	],

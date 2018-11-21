@@ -1,8 +1,9 @@
 {
   "name": "jsonforms-tooling",
-  "version": "0.0.1",
   "description": "",
-  "author": "EclipseSource",
+  "version": "0.0.1",
+  "publisher": "EclipseSource",
+  "license": "MIT",
   "main": "out/index",
   "typings": "out/index",
   "scripts": {
