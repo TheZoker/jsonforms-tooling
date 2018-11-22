@@ -8,7 +8,7 @@
   "typings": "out/index",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src -d out --extensions \".ts,.tsx\"",
+    "build": "npm run compile",
     "compile": "rimraf out && tsc -p ./ --declaration"
   },
   "dependencies": {

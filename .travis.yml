@@ -1,20 +1,19 @@
-sudo: enabled
+sudo: required
 
 language: node_js
 
 node_js:
-- 'node'
-- 'iojs'
-- '8'
+  - 'node'
 
 cache: npm
 
 before_install:
-- npm update
+  - npm update
 
 install:
-- npm ci
-- lerna bootstrap --hoist
+  - npm ci
+  - lerna bootstrap --hoist --npm-ci-mode
 
 script:
-- npm run coveralls
+  - lerna run build
+  - npm run coveralls
