@@ -1,0 +1,10 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "theia-plugin/package.json",
+        "vscode-extension/package.json"
+      ]
+    }
+  }
+}
