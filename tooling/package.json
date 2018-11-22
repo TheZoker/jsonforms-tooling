@@ -11,18 +11,9 @@
     "build": "npm run compile",
     "compile": "rimraf out && tsc -p ./ --declaration"
   },
-  "dependencies": {
-    "@jsonforms/core": "^2.0.12-rc.3",
-    "npm": "^6.4.1",
-    "simple-git": "^1.107.0"
-  },
+  "dependencies": {},
   "type-check": "tsc",
   "devDependencies": {
-    "@babel/cli": "^7.1.5",
-    "@babel/core": "^7.1.6",
-    "@babel/preset-env": "^7.1.6",
-    "@babel/preset-typescript": "^7.1.0",
-    "@types/node": "^10.12.7",
     "rimraf": "^2.6.2"
   }
 }

@@ -4,8 +4,7 @@ const simplegit = require("simple-git/promise");
 const jsonforms = require("@jsonforms/core");
 const cp = require("child_process");
 const fs_1 = require("fs");
-const Ajv = require("ajv");
-var npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 /*
  * Clones a git repository and runs npm install on it
  * @param {string} repo the name of the repo that should be cloned
@@ -13,7 +12,7 @@ var npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
  * @param {function} callback forwards the current status to the caller
  */
 function cloneAndInstall(repo, path, callback) {
-    var url = '';
+    let url = '';
     switch (repo) {
         case 'example':
             url = 'https://github.com/eclipsesource/make-it-happen-react';
@@ -25,11 +24,11 @@ function cloneAndInstall(repo, path, callback) {
     const git = simplegit();
     callback('Starting to clone repo');
     git.clone(url, path)
-        .then(function () {
+        .then(() => {
         callback('Finished to clone repo');
         callback('Running npm install');
         const result = cp.spawnSync(npm, ['install'], {
-            cwd: path
+            cwd: path,
         });
         callback(result.signal);
     })
@@ -41,52 +40,27 @@ exports.cloneAndInstall = cloneAndInstall;
  * @param {string} path path to the json schema file
  * @param {function} callback forwards the current status to the caller
  */
-function generateUISchema(path, name, callback) {
-    // Read JSON Schema file
+function generateUISchema(path, callback) {
     fs_1.readFile(path, 'utf8', (err, data) => {
-        if (err) {
+        if (err)
             callback(err.message, 'err');
-            return;
+        const jsonSchema = JSON.parse(data);
+        const jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
+        let newPath = '';
+        if (process.platform === 'win32') {
+            newPath = path.substring(0, path.lastIndexOf('\\'));
+            newPath = `${newPath}\\ui-schema.json`;
         }
-        var jsonSchema = JSON.parse(data);
-        validateJSONSchema(jsonSchema, function (err) {
-            if (err) {
-                callback(err, 'err');
-                return;
-            }
-            var jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
-            // Check if windows or linux filesystem
-            if (process.platform === 'win32') {
-                var newPath = path.substring(0, path.lastIndexOf("\\")) + '\\' + name;
-            }
-            else {
-                var newPath = path.substring(0, path.lastIndexOf("/")) + '/' + name;
-            }
-            // Write UI Schema file
-            fs_1.writeFile(newPath, JSON.stringify(jsonUISchema, null, 2), (err) => {
-                if (err) {
-                    callback(err.message, 'err');
-                    return;
-                }
-                callback('Successfully generated UI schema');
-            });
+        else {
+            newPath = path.substring(0, path.lastIndexOf('/'));
+            newPath = `${newPath}/ui-schema.json`;
+        }
+        fs_1.writeFile(newPath, JSON.stringify(jsonUISchema, null, 2), (err) => {
+            if (err)
+                callback(err.message, 'err');
+            callback('Successfully generated UI schema');
         });
     });
 }
 exports.generateUISchema = generateUISchema;
-/**
- * Validate a given JSON Schema
- * @param {string} path path to the json schema file
- * @param {function} callback forwards the current status to the caller
- */
-function validateJSONSchema(schema, callback) {
-    var ajv = new Ajv();
-    try {
-        ajv.compile(schema);
-        callback();
-    }
-    catch (error) {
-        callback(error.message);
-    }
-}
 //# sourceMappingURL=index.js.map
