@@ -2,17 +2,18 @@
 
 // tslint:disable:no-var-requires
 // tslint:disable:no-require-imports
-
 import * as Generator from 'yeoman-generator';
 import chalk from 'chalk';
-const clear = require('clear');
-const figlet = require('figlet');
-const validate = require('validate-npm-package-name');
 import { join } from 'path';
 import { readFile, writeFile } from 'fs';
 
+const clear = require('clear');
+const figlet = require('figlet');
+const validate = require('validate-npm-package-name');
+
 const SEED = 'jsonforms-react-seed';
-const EXAMPLE = 'make-it-happen-react'
+const EXAMPLE = 'make-it-happen-react';
+const BASIC = 'jsonforms-basic-project';
 
 class JsonformsGenerator extends Generator {
 
@@ -38,6 +39,9 @@ class JsonformsGenerator extends Generator {
     if(this.project == 'seed') {
       this.project = SEED;
     }
+    if(this.project == 'basic') {
+      this.project = BASIC;
+    }
   }
 
   async prompting() {
@@ -60,6 +64,10 @@ class JsonformsGenerator extends Generator {
           {
             name: 'Seed Project',
             value: SEED
+          },
+          {
+            name: 'Basic Project',
+            value: BASIC
           }
         ],
         when: (this.project == null)
@@ -82,6 +90,23 @@ class JsonformsGenerator extends Generator {
         },
         when: (answers) => {
           if ((answers.project === SEED || this.project === SEED)
+          && (this.name == null || !validate(this.name).validForNewPackages)) {
+            return true;
+          };
+          return false;
+        }
+      },
+      {
+        name: 'name',
+        type: 'input',
+        message: 'Enter the name of the basic project:',
+        default: 'jsonforms-basic',
+        validate: function(value) {
+          var valid = validate(value);
+          return valid.validForNewPackages || 'Sorry, name can only contain URL-friendly characters and name can no longer contain capital letters.';
+        },
+        when: (answers) => {
+          if ((answers.project === BASIC || this.project === BASIC)
           && (this.name == null || !validate(this.name).validForNewPackages)) {
             return true;
           };
