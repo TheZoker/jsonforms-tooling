@@ -44,8 +44,8 @@ export const cloneAndInstall = (
   git.clone(url, path)
     .then(() => {
       callback('Finished to clone repo');
-      if(repo === 'basic') {
-        if(!endpoint){
+      if (repo === 'basic') {
+        if (!endpoint) {
           callback('Not a valid API endpoint.', 'err');
           return;
         }
@@ -123,7 +123,10 @@ const validateJSONSchema = (schema: Object, callback: (err?: string) => void) =>
  * @param jsonSchema {any} : Valid JSON Schema to generate the UI Schema from.
  * @param callback {function} : Callback to pass informational message.
  */
-const generateJSONUISchemaFile = (path: string, jsonSchema: any, callback: (err?: string) => void) => {
+const generateJSONUISchemaFile = (
+  path: string,
+  jsonSchema: any,
+  callback: (err?: string) => void) => {
   // Validate if content is valid JSON
   validateJSONSchema(jsonSchema, (validateError?: string) => {
     if (validateError) {
@@ -133,8 +136,7 @@ const generateJSONUISchemaFile = (path: string, jsonSchema: any, callback: (err?
     // Generate UI Schema
     const jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
     // Generate file inside project
-    writeFile(path, JSON.stringify(jsonUISchema, null, 2), 'utf-8', 
-      (error) => {
+    writeFile(path, JSON.stringify(jsonUISchema, null, 2), 'utf-8', error => {
         if (error.message) {
           callback(error.message);
           return;
@@ -153,23 +155,23 @@ const generateJSONUISchemaFile = (path: string, jsonSchema: any, callback: (err?
  * @param {URL} endpoint to the OpenAPI definition.
  */
 const retrieveAndSaveJSONUISchemaFromAPI = (
-  repo: string, 
-  path: string, 
-  endpoint: URL, 
+  repo: string,
+  path: string,
+  endpoint: URL,
   callback: (result: string, type?: string) => void
 ) => {
   callback(`Getting endpoint for ${repo} project.`);
-  var reqOptions = {
+  const reqOptions = {
     host : endpoint.hostname,
     path:  endpoint.pathname,
     json: true,
     headers: {
-        "content-type": "text/json"
+        'content-type': 'text/json'
     },
-  } 
-  get(reqOptions, (response) => {
+  };
+  get(reqOptions, response => {
     response.setEncoding('utf-8');
-    response.on('data', (schema) => {
+    response.on('data', schema => {
       callback('Generating the UI Schema file...');
       const schemaObj = JSON.parse(schema);
       const jsonSchema = schemaObj.components.schemas.Applicant;
@@ -179,8 +181,7 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
       const constsPath = srcPath + 'vars.js';
       // Create .js file with constants
       const obj = 'const ENDPOINT = \'' + endpoint + '\'; export default ENDPOINT;';
-      writeFile(constsPath, obj, 'utf-8', 
-        (error) => {
+      writeFile(constsPath, obj, 'utf-8', error => {
           if (error.message) {
             callback('error', error.message);
             return;
@@ -196,7 +197,7 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
         }
       });
     });
-  }).on("error", (err) => {
+  }).on('error', err => {
     callback(err.message, 'err');
     console.log(err.message);
   });
