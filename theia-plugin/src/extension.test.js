@@ -8,23 +8,19 @@ describe('Theia plugin tests', () => {
       expect(true).toBe(true);
   });
   
-  // Test case for asyncCreateProject function
-  test('asyncCreateProject', () => {
+  // Test case for createExampleProjectCommand function
+  test('createExampleProjectCommand', () => {
       expect(true).toBe(true);
   });
 
-  // Test case for asyncGenerateUiSchema function
-  test('asyncGenerateUiSchema', () => {
+  // Test case for createSeedProjectCommand function
+  test('createSeedProjectCommand', () => {
       expect(true).toBe(true);
   });
 
-  // Test case for showMessage function
-  test('showMessage', () => {
+  // Test case for generateUISchemaCommand function
+  test('generateUISchemaCommand', () => {
     expect(true).toBe(true);
   });
 
-  // Test case for asyncCreateProjectWithArgs function
-  test('asyncCreateProjectWithArgs', () => {
-    expect(true).toBe(true);
-  });
 });

@@ -2,6 +2,7 @@
 
 // tslint:disable:no-var-requires
 // tslint:disable:no-require-imports
+// jshint esversion: 6
 
 import * as Generator from 'yeoman-generator';
 import chalk from 'chalk';
@@ -12,7 +13,7 @@ import { join } from 'path';
 import { readFile, writeFile } from 'fs';
 
 const SEED = 'jsonforms-react-seed';
-const EXAMPLE = 'make-it-happen-react'
+const EXAMPLE = 'make-it-happen-react';
 
 class JsonformsGenerator extends Generator {
 
@@ -32,10 +33,10 @@ class JsonformsGenerator extends Generator {
     this.path = this.options.path;
     this.name = this.options.name;
 
-    if(this.project == 'example') {
+    if (this.project === 'example') {
       this.project = EXAMPLE;
     }
-    if(this.project == 'seed') {
+    if (this.project === 'seed') {
       this.project = SEED;
     }
   }
@@ -76,50 +77,51 @@ class JsonformsGenerator extends Generator {
         type: 'input',
         message: 'Enter the name of the seed project:',
         default: 'jsonforms-seed',
-        validate: function(value) {
-          var valid = validate(value);
-          return valid.validForNewPackages || 'Sorry, name can only contain URL-friendly characters and name can no longer contain capital letters.';
+        validate: value => {
+          const valid = validate(value);
+          return valid.validForNewPackages ||
+          'Sorry, name can only contain URL-friendly characters and no capital letters.';
         },
-        when: (answers) => {
+        when: answers => {
           if ((answers.project === SEED || this.project === SEED)
           && (this.name == null || !validate(this.name).validForNewPackages)) {
             return true;
-          };
+          }
           return false;
         }
       }
     ]);
 
-    if(this.project == null) {
+    if (this.project == null) {
       this.project = this.answers.project;
     }
-    if(this.answers.path == 'current' || this.path == 'current') {
+    if (this.answers.path === 'current' || this.path === 'current') {
       this.path = process.cwd();
     }
-    if(this.path == null) {
+    if (this.path == null) {
       this.path = this.answers.path;
     }
-    if(this.name == null || !validate(this.name).validForNewPackages) {
+    if (this.name == null || !validate(this.name).validForNewPackages) {
       this.name = this.answers.name;
     }
   }
 
   write() {
-    var source = join(__dirname, '../../node_modules/'+this.project)+'/**';
+    const source = join(__dirname, '../../node_modules/' + this.project) + '/**';
     this.fs.copy(source, this.path);
   }
 
   install() {
-    if(this.project == SEED && this.name != null) {
-      var packagePath = this.path + '/package.json';
+    if (this.project === SEED && this.name != null) {
+      const packagePath = this.path + '/package.json';
       readFile(packagePath, 'utf8', (readError, data) => {
 
         if (readError) {
           this.log(chalk.red(readError.message));
           return;
         }
-    
-        let packageJson = JSON.parse(data);
+
+        const packageJson = JSON.parse(data);
         packageJson.name = this.name;
 
         writeFile(packagePath, JSON.stringify(packageJson, null, 2), writeError => {
@@ -134,6 +136,6 @@ class JsonformsGenerator extends Generator {
     process.chdir(this.path);
     this.npmInstall();
   }
-};
-  
+}
+
 export default JsonformsGenerator;

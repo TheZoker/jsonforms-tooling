@@ -1,6 +1,7 @@
 // tslint:disable:no-var-requires
 // tslint:disable:no-require-imports
 // tslint:disable:no-use-before-declare
+// jshint esversion: 6
 
 'use strict';
 // The module 'vscode' contains the VS Code extensibility API

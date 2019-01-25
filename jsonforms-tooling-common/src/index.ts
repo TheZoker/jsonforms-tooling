@@ -1,4 +1,5 @@
 // tslint:disable:no-use-before-declare
+// jshint esversion: 6
 
 import * as Ajv from 'ajv';
 import * as cp from 'child_process';
