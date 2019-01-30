@@ -13,10 +13,10 @@ export enum Project {
   Seed = 'seed',
 }
 
-/*
- * Receives the data from the editor and calls the install methos
+/**
+ * Receives the data from the editor and calls the install methods
  * @param {any} editorInstance the instance of the editor
- * @param {string} path the arguments passed to the editor call
+ * @param {string} path the path for the project
  * @param {string} project the project, that should be installed
  */
 export const createProject = (editorInstance: any, path: string, project: string) => {
@@ -42,7 +42,7 @@ export const createProject = (editorInstance: any, path: string, project: string
 /**
  * Generates the default UI Schema from a json schema
  * @param {any} editorInstance the instance of the editor
- * @param {string} path the arguments passed to the editor call
+ * @param {string} path the path to the schema file
  */
 export const generateUISchema = (editorInstance: any, path: string) => {
   if (!path) {
@@ -64,6 +64,46 @@ export const generateUISchema = (editorInstance: any, path: string) => {
     });
   } else {
     asyncGenerateUiSchema(editorInstance, path);
+  }
+};
+
+/**
+ * Shows the jsonforms tree editor within the editor
+ * @param {any} editorInstance the instance of the editor
+ * @param {string} path the path to the schema or ui-schema file
+ */
+export const showTreeEditor = (editorInstance: any, path: string) => {
+  if (!path) {
+    editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
+      canSelectMany: false,
+      canSelectFolders: false,
+      canSelectFiles: true,
+      openLabel: 'Select schema',
+      filters: {
+        'Json Files': ['json'],
+      },
+    }).then((fileUri: any) => {
+      if (fileUri && fileUri[0].fsPath) {
+        // asyncGenerateUiSchema(editorInstance, fileUri[0].fsPath);
+      } else {
+        showMessage('Please select a json schema file', 'err');
+        return;
+      }
+    });
+  } else {
+    const schemas = ['UI Schema', 'Schema'];
+    editorInstance.window.showQuickPick(schemas, editorInstance.QuickPickOptions = {
+      canSelectMany: false,
+    }).then((schema: any) => {
+      console.log(schema);
+      if (schema && schema[0].fsPath) {
+        // asyncGenerateUiSchema(editorInstance, schema[0].fsPath);
+      } else {
+        showMessage('Please select a json schema file', 'err');
+        return;
+      }
+    });
+    // asyncGenerateUiSchema(editorInstance, path);
   }
 };
 

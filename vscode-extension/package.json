@@ -14,7 +14,8 @@
   "activationEvents": [
     "onCommand:extension.createExampleProject",
     "onCommand:extension.createSeedProject",
-    "onCommand:extension.generateUISchema"
+    "onCommand:extension.generateUISchema",
+    "onCommand:extension.showTreeEditor"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -30,6 +31,10 @@
       {
         "command": "extension.generateUISchema",
         "title": "JSONForms: Generate UI Schema"
+      },
+      {
+        "command": "extension.showTreeEditor",
+        "title": "JSONForms: Show Tree Editor"
       }
     ],
     "menus": {
@@ -47,6 +52,11 @@
         {
           "when": "resourceExtname == .json",
           "command": "extension.generateUISchema",
+          "group": "jsonforms"
+        },
+        {
+          "when": "resourceExtname == .json",
+          "command": "extension.showTreeEditor",
           "group": "jsonforms"
         }
       ]

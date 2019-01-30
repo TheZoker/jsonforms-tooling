@@ -3,7 +3,7 @@
  */
 
 import * as theia from '@theia/plugin';
-import { createProject, generateUISchema, Project } from 'jsonforms-tooling-common';
+import { createProject, generateUISchema, Project, showTreeEditor } from 'jsonforms-tooling-common';
 
 export const start = (context: theia.PluginContext) => {
   const createExampleProjectCommandOptions = {
@@ -41,7 +41,19 @@ export const start = (context: theia.PluginContext) => {
     }
   );
 
+  const showTreeEditorCommandOptions = {
+    id: 'show-tree-editor',
+    label: 'JSONForms: Show Tree Editor',
+  };
+  const showTreeEditorCommand = theia.commands.registerCommand(
+    showTreeEditorCommandOptions,
+    (args: any) => {
+      showTreeEditor(theia, args.fsPath);
+    }
+  );
+
   context.subscriptions.push(createExampleProjectCommand);
   context.subscriptions.push(createSeedProjectCommand);
   context.subscriptions.push(generateUISchemaCommand);
+  context.subscriptions.push(showTreeEditorCommand);
 };
