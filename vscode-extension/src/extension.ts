@@ -14,6 +14,9 @@ export const activate = (context: vscode.ExtensionContext) => {
   const createExampleProjectCommand = vscode.commands.registerCommand(
     'extension.createExampleProject',
     (args: any) => {
+      if (args === undefined) {
+        args = {fsPath: null};
+      }
       createProject(vscode, args.fsPath, Project.Example);
     }
   );
@@ -21,6 +24,9 @@ export const activate = (context: vscode.ExtensionContext) => {
   const createSeedProjectCommand = vscode.commands.registerCommand(
     'extension.createSeedProject',
     (args: any) => {
+      if (args === undefined) {
+        args = {fsPath: null};
+      }
       createProject(vscode, args.fsPath, Project.Seed);
     }
   );
@@ -28,12 +34,18 @@ export const activate = (context: vscode.ExtensionContext) => {
   const generateUISchemaCommand = vscode.commands.registerCommand(
     'extension.generateUISchema',
     (args: any) => {
+      if (args === undefined) {
+        args = {fsPath: null};
+      }
       generateUISchema(vscode, args.fsPath);
   });
 
   const showTreeEditorCommand = vscode.commands.registerCommand(
     'extension.showTreeEditor',
     (args: any) => {
+      if (args === undefined) {
+        args = {fsPath: null};
+      }
       showTreeEditor(vscode, args.fsPath);
   });
 
