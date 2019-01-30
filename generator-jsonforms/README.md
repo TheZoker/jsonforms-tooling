@@ -2,6 +2,7 @@
 
 This Yeoman Generator brings you all the functions of the tooling to your terminal. Within the terminal you can:
 
+* Create a ready to go JSONForms project
 * Create an example project
 * Create an seed project
 * Generate your basic UI Schema from your Schema
@@ -23,6 +24,7 @@ If you want to avoid the interface, you can use the following parameters:
 Choose the project you would like to scaffold
 
 Current available project seeds:
+- `basic`
 - `seed`
 - `example`
 
