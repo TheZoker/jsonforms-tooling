@@ -9,6 +9,7 @@ import { sep } from 'path';
 const yeoman = require('yeoman-environment');
 
 export enum Project {
+  Basic = 'basic',
   Example = 'example',
   Seed = 'seed',
 }
