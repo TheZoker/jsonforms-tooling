@@ -78,32 +78,68 @@ export const showTreeEditor = (editorInstance: any, path: string) => {
       canSelectMany: false,
       canSelectFolders: false,
       canSelectFiles: true,
-      openLabel: 'Select schema',
+      openLabel: 'Select ui schema',
       filters: {
         'Json Files': ['json'],
       },
-    }).then((fileUri: any) => {
-      if (fileUri && fileUri[0].fsPath) {
-        // asyncGenerateUiSchema(editorInstance, fileUri[0].fsPath);
+    }).then((uiSchemafileUri: any) => {
+      if (uiSchemafileUri && uiSchemafileUri[0].fsPath) {
+        editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
+          canSelectMany: false,
+          canSelectFolders: false,
+          canSelectFiles: true,
+          openLabel: 'Select schema',
+          filters: {
+            'Json Files': ['json'],
+          },
+        }).then((schemaFileUri: any) => {
+          if (schemaFileUri && schemaFileUri[0].fsPath) {
+            showWebview(editorInstance, uiSchemafileUri, schemaFileUri, 'tree');
+          } else {
+            showMessage('Please select a json schema file', 'err');
+            return;
+          }
+        });
       } else {
-        showMessage('Please select a json schema file', 'err');
+        showMessage('Please select a ui schema file', 'err');
         return;
       }
     });
   } else {
-    const schemas = ['UI Schema', 'Schema'];
-    editorInstance.window.showQuickPick(schemas, editorInstance.QuickPickOptions = {
+    editorInstance.window.showQuickPick(['UI Schema', 'Schema'], editorInstance.QuickPickOptions = {
       canSelectMany: false,
+      placeHolder: 'Was that the UI schema or the schema file?'
     }).then((schema: any) => {
-      console.log(schema);
-      if (schema && schema[0].fsPath) {
-        // asyncGenerateUiSchema(editorInstance, schema[0].fsPath);
+      if (schema) {
+        let selectLabel = 'Select ui Schema';
+        if (schema === 'UI Schema') {
+          selectLabel = 'Select Schema';
+        }
+        editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
+          canSelectMany: false,
+          canSelectFolders: false,
+          canSelectFiles: true,
+          openLabel: selectLabel,
+          filters: {
+            'Json Files': ['json'],
+          },
+        }).then((schemaFileUri: any) => {
+          if (schemaFileUri && schemaFileUri[0].fsPath) {
+            if (schema === 'UI Schema') {
+              showWebview(editorInstance, path, schemaFileUri, 'tree');
+            } else {
+              showWebview(editorInstance, schemaFileUri, path, 'tree');
+            }
+          } else {
+            showMessage('Please select a json schema file', 'err');
+            return;
+          }
+        });
       } else {
-        showMessage('Please select a json schema file', 'err');
+        showMessage('Please select the schema type', 'err');
         return;
       }
     });
-    // asyncGenerateUiSchema(editorInstance, path);
   }
 };
 
@@ -245,4 +281,30 @@ const cloneAndInstall = (editorInstance: any, project: string, path: string, nam
       }
     });
   });
+};
+
+/**
+ * Show localhost within webview
+ * @param {any} editorInstance the instance of the editor
+ * @param {string} uiSchemaPath the path to the ui schema
+ * @param {string} schemaPath the path to the schema
+ * @param {string} id the id for the webview
+ */
+const showWebview = (editorInstance: any, uiSchemaPath: string, schemaPath: string, id: string) => {
+  // TODO: start webserver, pass uischema and schema path
+  // TODO: get port back
+  const port = 3000;
+  let name = 'Preview';
+  if (id === 'tree') {
+    name = 'TreeEditor';
+  }
+  const webView = editorInstance.window.createWebviewPanel(
+    'view-' + id,
+    name,
+    editorInstance.ViewColumn.Two,
+    { enableScripts: true }
+  );
+  webView.webview.html = '<!DOCTYPE html>' +
+  '<html lang="en"><iframe src="http://locahost:' + port + '"' +
+  'style="height: 100vh; width: 100vw">' + name + '</iframe></html>';
 };
