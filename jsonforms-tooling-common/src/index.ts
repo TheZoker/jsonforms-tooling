@@ -304,7 +304,7 @@ const showWebview = (editorInstance: any, uiSchemaPath: string, schemaPath: stri
     editorInstance.ViewColumn.Two,
     { enableScripts: true }
   );
-  webView.webview.html = '<!DOCTYPE html>' +
-  '<html lang="en"><iframe src="http://locahost:' + port + '"' +
-  'style="height: 100vh; width: 100vw">' + name + '</iframe></html>';
+  webView.webview.html = '<!DOCTYPE html>'
+  + `<html lang="en"><iframe src="http://locahost:${port}"`
+  + `style="height: 100vh; width: 100vw">${name}</iframe></html>`;
 };
