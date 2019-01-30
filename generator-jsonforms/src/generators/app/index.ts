@@ -103,15 +103,15 @@ export class JsonformsGenerator extends Generator {
         {
           name: 'name',
           type: 'input',
-          message: 'Enter the name of the seed project:',
-          default: 'jsonforms-seed',
+          message: `Enter the name of the ${this.project} project:`,
+          default: `jsonforms-${this.project}`,
           validate: value => {
             const valid = validate(value);
             return valid.validForNewPackages || 'Sorry, name can only contain URL-friendly ' +
             'characters and name can no longer contain capital letters.';
           },
           when: answers => {
-            if (answers.project === Project.Seed || this.project === Project.Seed) {
+            if (answers.project === Project.Seed || this.project === Project.Seed || answers.project === Project.Basic || this.project === Project.Basic) {
               if (this.name == null) {
                 return true;
               }
@@ -148,7 +148,7 @@ export class JsonformsGenerator extends Generator {
 
   async install() {
     this.log('installing');
-    if (this.project === Project.Seed && this.name != null) {
+    if ((this.project === Project.Seed || this.project === Project.Basic) && this.name != null) {
       const packagePath = this.path + sep + 'package.json';
       readFile(packagePath, 'utf8', (readError, data) => {
 
