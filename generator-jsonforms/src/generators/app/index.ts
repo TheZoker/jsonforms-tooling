@@ -27,6 +27,7 @@ export class JsonformsGenerator extends Generator {
   project: string;
   repo: string;
   path: string;
+  basicProjectSchemaFile: String;
   name: string;
   skipPrompting = false;
   answers: any;
@@ -36,12 +37,14 @@ export class JsonformsGenerator extends Generator {
 
     this.option('project', { type: String } );
     this.option('path', { type: String } );
+    this.option('basicProjectSchemaFile', { type: String } );
     this.option('name', { type: String } );
-    this.option('skipPrompting', { type: Boolean} );
+    this.option('skipPrompting', { type: Boolean } );
 
     this.project = this.options.project;
     this.repo = '';
     this.path = this.options.path;
+    this.basicProjectSchemaFile = this.options.basicProjectSchemaFile;
     this.name = this.options.name;
     this.skipPrompting = this.options.skipPromting;
 
@@ -101,6 +104,13 @@ export class JsonformsGenerator extends Generator {
           when: (this.path == null)
         },
         {
+          name: 'basicProjectSchemaFile',
+          type: 'input',
+          message: 'Enter the local path or URL of the schema file from which the ui schema will be generated:',
+          default: 'required',
+          when: (answers) => (answers.project === ProjectRepo.Basic || this.project === ProjectRepo.Basic)
+        },
+        {
           name: 'name',
           type: 'input',
           message: `Enter the name of the ${this.project} project:`,
@@ -133,6 +143,9 @@ export class JsonformsGenerator extends Generator {
       }
       if (this.path == null) {
         this.path = this.answers.path;
+      }
+      if (this.basicProjectSchemaFile == null) {
+        this.basicProjectSchemaFile = this.answers.basicProjectSchemaFile;
       }
       if (this.name == null || !validate(this.name).validForNewPackages) {
         this.name = this.answers.name;
