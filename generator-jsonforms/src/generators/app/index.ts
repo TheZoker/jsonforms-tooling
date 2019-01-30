@@ -11,11 +11,13 @@ import { join, sep } from 'path';
 import { readFile, writeFile } from 'fs';
 
 enum ProjectRepo {
+  Basic = 'jsonforms-basic-project',
   Example = 'make-it-happen-react',
   Seed = 'jsonforms-react-seed',
 }
 
 enum Project {
+  Basic = 'basic',
   Example = 'example',
   Seed = 'seed',
 }
@@ -43,6 +45,9 @@ export class JsonformsGenerator extends Generator {
     this.name = this.options.name;
     this.skipPrompting = this.options.skipPromting;
 
+    if (this.project === Project.Basic) {
+      this.repo = ProjectRepo.Basic;
+    }
     if (this.project === Project.Example) {
       this.repo = ProjectRepo.Example;
     }
@@ -66,6 +71,10 @@ export class JsonformsGenerator extends Generator {
           message: 'Select a project',
           choices: [
             {
+              name: 'Basic Project',
+              value: ProjectRepo.Basic
+            },
+            {
               name: 'Example Project',
               value: ProjectRepo.Example
             },
@@ -78,7 +87,7 @@ export class JsonformsGenerator extends Generator {
             if (this.project == null) {
               return true;
             }
-            if (this.project !== 'example' && this.project !== 'seed') {
+            if (this.project !== 'basic' && this.project !== 'example' && this.project !== 'seed') {
               return true;
             }
             return false;
