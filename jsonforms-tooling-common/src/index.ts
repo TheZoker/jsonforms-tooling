@@ -169,12 +169,27 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
     placeHolder: `Enter a name for your ${project} project`,
   }).then((name: any) => {
     let projectName = name;
+
     if (!name) {
       projectName = `jsonforms-${project}`;
     } else {
-      showMessage(editorInstance, `Creating ${project} project: ${path}`);
-      cloneAndInstall(editorInstance, project, path, projectName);
+      if (project === Project.Seed) {
+        showMessage(editorInstance, `Creating ${project} project: ${path}`);
+        cloneAndInstall(editorInstance, project, path, projectName);
+      } else {
+
+        editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
+          prompt: 'Label: ',
+          placeHolder: `Enter the URL to retrieve the JSON schema for your ${project} project`,
+        }).then((schemaURL: any) => {
+          showMessage(editorInstance, `Getting definitions for ${project} project: ${schemaURL}`);
+
+          showMessage(editorInstance, `Creating ${project} project: ${path}`);
+          cloneAndInstall(editorInstance, project, path, projectName, schemaURL);
+        });
+      }
     }
+
   });
 };
 
@@ -184,8 +199,16 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
  * @param {string} url the url to the project repository
  * @param {string} path the path to the project folder
  * @param {string} name the name of the project
+ * @param {string} schemaURL the location of the JSON schema definition of the basic project  
  */
-const cloneAndInstall = (editorInstance: any, project: string, path: string, name?: string) => {
+const cloneAndInstall = (
+  editorInstance: any,
+  project: string,
+  path: string,
+  name?: string,
+  schemaURL?: string
+) => {
+
   const env = yeoman.createEnv();
   env.on('error', (err: any) => {
     console.error('Error', err.message);
@@ -195,6 +218,7 @@ const cloneAndInstall = (editorInstance: any, project: string, path: string, nam
     const options = {
       'project': project,
       'path': path,
+      'basicProjectSchemaURL': schemaURL,
       'name': name,
       'skipPrompting': true,
     };
