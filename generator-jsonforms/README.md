@@ -44,6 +44,17 @@ Command:
 yo jsonforms --path "~\Documents\Project\Seed"
 ```
 
+### Schema URL
+
+Enter the URL where the JSON schema is located
+
+This is important for the Basic project to work.
+
+Command:
+```shell
+yo jsonforms --basicProjectSchemaURL "https://api.swaggerhub.com/apis/jsonforms-tooling/JSONForms-Tooling-API/1.0.0"
+```
+
 ### Name
 
 This parameter is only available for the `seed` project. This name will be used inside the `package.json`.
