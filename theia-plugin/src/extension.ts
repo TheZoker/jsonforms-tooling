@@ -6,6 +6,19 @@ import * as theia from '@theia/plugin';
 import { createProject, generateUISchema, Project } from 'jsonforms-tooling-common';
 
 export const start = (context: theia.PluginContext) => {
+  const createBasicProjectCommandOptions = {
+    id: 'create-basic-project',
+    label: 'JSONForms: Create Basic Project',
+  };
+  const createBasicProjectCommand = theia.commands.registerCommand(
+    createBasicProjectCommandOptions,
+    (args: any) => {
+      if (!args) {
+        createProject(theia, args.fsPath, Project.Example);
+      }
+    }
+  );
+
   const createExampleProjectCommandOptions = {
     id: 'create-example-project',
     label: 'JSONForms: Create Example Project',
@@ -41,6 +54,7 @@ export const start = (context: theia.PluginContext) => {
     }
   );
 
+  context.subscriptions.push(createBasicProjectCommand);
   context.subscriptions.push(createExampleProjectCommand);
   context.subscriptions.push(createSeedProjectCommand);
   context.subscriptions.push(generateUISchemaCommand);
