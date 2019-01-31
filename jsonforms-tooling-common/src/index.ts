@@ -305,6 +305,6 @@ const showWebview = (editorInstance: any, uiSchemaPath: string, schemaPath: stri
     { enableScripts: true }
   );
   webView.webview.html = '<!DOCTYPE html>'
-  + `<html lang="en"><iframe src="http://locahost:${port}"`
+  + `<html lang="en"><iframe src="http://localhost:${port}"`
   + `style="height: 100vh; width: 100vw">${name}</iframe></html>`;
 };
