@@ -106,9 +106,12 @@ export class JsonformsGenerator extends Generator {
         {
           name: 'basicProjectSchemaURL',
           type: 'input',
-          message: 'Enter the local path or URL of the schema URL from which the ui schema will be generated:',
+          message: 'Enter the path or URL of schema from which the ui schema will be generated:',
           default: 'required',
-          when: (answers) => (answers.project === ProjectRepo.Basic || this.project === ProjectRepo.Basic)
+          when: answers => (
+            answers.project === ProjectRepo.Basic ||
+            this.project === ProjectRepo.Basic
+          )
         },
         {
           name: 'name',
@@ -121,7 +124,12 @@ export class JsonformsGenerator extends Generator {
             'characters and name can no longer contain capital letters.';
           },
           when: answers => {
-            if (answers.project === Project.Seed || this.project === Project.Seed || answers.project === Project.Basic || this.project === Project.Basic) {
+            if (
+              answers.project === Project.Seed ||
+              this.project === Project.Seed ||
+              answers.project === Project.Basic ||
+              this.project === Project.Basic
+            ) {
               if (this.name == null) {
                 return true;
               }
