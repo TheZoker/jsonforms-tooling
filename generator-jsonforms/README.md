@@ -44,7 +44,7 @@ Command:
 yo jsonforms --path "~\Documents\Project\Seed"
 ```
 
-### Schema URL
+### Schema Path
 
 Enter the URL where the JSON schema is located
 
@@ -52,7 +52,7 @@ This is important for the Basic project to work.
 
 Command:
 ```shell
-yo jsonforms --project "basic" --basicProjectSchemaURL "https://api.swaggerhub.com/apis/jsonforms-tooling/JSONForms-Tooling-API/1.0.0"
+yo jsonforms --project "basic" --basicProjectSchemaPath "/Users/roxhens/Desktop/tester/project_files/schema_file.json"
 ```
 
 ### Name
