@@ -21,7 +21,7 @@
     "chalk": "^2.4.2",
     "clear": "^0.1.0",
     "figlet": "^1.2.1",
-    "jsonforms-basic-project": "git+https://git@github.com/roxhens/jsonforms-basic-project.git",
+    "jsonforms-basic-project": "git+https://git@github.com/roxhens/jsonforms-yo-basic-project.git",
     "jsonforms-react-seed": "git+https://git@github.com/eclipsesource/jsonforms-react-seed.git",
     "make-it-happen-react": "git+https://git@github.com/eclipsesource/make-it-happen-react.git",
     "validate-npm-package-name": "^3.0.0",
