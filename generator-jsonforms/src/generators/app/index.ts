@@ -196,7 +196,6 @@ export class JsonformsGenerator extends Generator {
     if (this.project === Project.Basic) {
       this.retrieveAndSaveJSONUISchemaFromAPI(
         this.repo,
-        this.path,
         new URL(this.basicProjectSchemaURL.toString())
       );
     }
@@ -212,14 +211,9 @@ export class JsonformsGenerator extends Generator {
    * Function to retrieve OpenAPI definition from endpoint and get the JSON UI Schema
    * from it to save it in JSON format.
    * @param {string} repo the name of the repo that should be cloned.
-   * @param {string} path to the folder, where the repo should be cloned into.
    * @param {URL} endpoint to the OpenAPI definition.
    */
-  retrieveAndSaveJSONUISchemaFromAPI = (
-    repo: string,
-    path: string,
-    endpoint: URL
-  ) => {
+  retrieveAndSaveJSONUISchemaFromAPI = (repo: string, endpoint: URL) => {
     this.log(`Getting endpoint for ${repo} project.`);
     const reqOptions = {
       host : endpoint.hostname,
@@ -235,8 +229,7 @@ export class JsonformsGenerator extends Generator {
         const schemaObj = JSON.parse(schema);
         const jsonSchema = schemaObj.components.schemas.Applicant;
         // Construct paths
-        const srcPath = 'src' + sep;
-        const jsonUISchemaPath = srcPath + 'json-ui-schema.json';
+        const jsonUISchemaPath = `src${sep}json-ui-schema.json`;
         // Generate .json file
         this.log('Generating the UI Schema file...');
         this.generateJSONUISchemaFile(jsonUISchemaPath, jsonSchema);
