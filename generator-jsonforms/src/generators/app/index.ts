@@ -183,7 +183,7 @@ export class JsonformsGenerator extends Generator {
         packageJson.name = this.name;
 
         writeFile(packagePath, JSON.stringify(packageJson, null, 2), writeError => {
-          if (writeError) {
+          if (writeError.message) {
             this.log(chalk.red(writeError.message));
             return;
           }
@@ -220,7 +220,7 @@ export class JsonformsGenerator extends Generator {
         `src${sep}json-schema.json`,
         JSON.stringify(jsonSchema, null, 2),
         writeError => {
-          if (writeError) {
+          if (writeError.message) {
             this.log(chalk.red(writeError.message));
             return;
           }
@@ -241,7 +241,7 @@ export class JsonformsGenerator extends Generator {
     // Generate UI Schema
     const jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
     writeFile(path, JSON.stringify(jsonUISchema, null, 2), writeError => {
-      if (writeError) {
+      if (writeError.message) {
         this.log(chalk.red(writeError.message));
         return;
       }
