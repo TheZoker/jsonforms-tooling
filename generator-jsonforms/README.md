@@ -52,7 +52,7 @@ This is important for the Basic project to work.
 
 Command:
 ```shell
-yo jsonforms --basicProjectSchemaURL "https://api.swaggerhub.com/apis/jsonforms-tooling/JSONForms-Tooling-API/1.0.0"
+yo jsonforms --project "basic" --basicProjectSchemaURL "https://api.swaggerhub.com/apis/jsonforms-tooling/JSONForms-Tooling-API/1.0.0"
 ```
 
 ### Name
