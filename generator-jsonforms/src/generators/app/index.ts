@@ -185,7 +185,7 @@ export class JsonformsGenerator extends Generator {
         packageJson.name = this.name;
 
         writeFile(packagePath, JSON.stringify(packageJson, null, 2), writeError => {
-          if (writeError.message) {
+          if (writeError) {
             this.log(chalk.red(writeError.message));
             return;
           }
