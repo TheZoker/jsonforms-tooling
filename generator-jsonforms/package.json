@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@types/yeoman-generator": "^3.0.1",
+    "@jsonforms/core": "^2.0.12",
+    "ajv": "^6.5.5",
     "chalk": "^2.4.2",
     "clear": "^0.1.0",
     "figlet": "^1.2.1",

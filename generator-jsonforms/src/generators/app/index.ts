@@ -3,12 +3,16 @@
 'use strict';
 
 import * as Generator from 'yeoman-generator';
+import * as jsonforms from '@jsonforms/core';
+import * as Ajv from 'ajv';
 import chalk from 'chalk';
 const clear = require('clear');
 const figlet = require('figlet');
 const validate = require('validate-npm-package-name');
 import { join, sep } from 'path';
 import { readFile, writeFile } from 'fs';
+import { URL } from 'url';
+import { get } from 'https';
 
 enum ProjectRepo {
   Basic = 'jsonforms-basic-project',
@@ -190,11 +194,124 @@ export class JsonformsGenerator extends Generator {
       });
     }
 
+    if (this.project === Project.Basic) {
+      this.retrieveAndSaveJSONUISchemaFromAPI(
+        this.repo,
+        this.path,
+        new URL(this.basicProjectSchemaURL.toString()),
+        (message?: string) => {
+          if (message) {
+            this.log('message', message);
+            return;
+          }
+        }
+      );
+    }
+
     process.chdir(this.path);
     this.installDependencies({
       bower: false,
       npm: true
     });
+  }
+
+  /**
+   * Function to retrieve OpenAPI definition from endpoint and get the JSON UI Schema
+   * from it to save it in JSON format.
+   * @param {string} repo the name of the repo that should be cloned.
+   * @param {string} path to the folder, where the repo should be cloned into.
+   * @param {URL} endpoint to the OpenAPI definition.
+   */
+  retrieveAndSaveJSONUISchemaFromAPI = (
+    repo: string,
+    path: string,
+    endpoint: URL,
+    callback: (result: string, type?: string) => void
+  ) => {
+    this.log(`Getting endpoint for ${repo} project.`);
+    const reqOptions = {
+      host : endpoint.hostname,
+      path:  endpoint.pathname,
+      json: true,
+      headers: {
+          'content-type': 'text/json'
+      },
+    };
+
+    get(reqOptions, response => {
+      response.setEncoding('utf-8');
+      response.on('data', schema => {
+        this.log('Generating the UI Schema file...');
+        const schemaObj = JSON.parse(schema);
+        const jsonSchema = schemaObj.components.schemas.Applicant;
+        // Construct paths
+        const srcPath = path + sep + 'src' + sep;
+        const jsonUISchemaPath = srcPath + 'json-ui-schema.json';
+        const constsPath = srcPath + 'vars.js';
+        // Create .js file with constants
+        const obj = 'const ENDPOINT = \'' + endpoint + '\'; export default ENDPOINT;';
+        writeFile(constsPath, obj, 'utf-8', error => {
+            if (error.message) {
+              this.log('error', error.message);
+              return;
+            }
+            this.log('Successfully generated endpoint!');
+          }
+        );
+        // Generate .json file
+        this.generateJSONUISchemaFile(jsonUISchemaPath, jsonSchema, (message?: string) => {
+          if (message) {
+            this.log('message', message);
+            return;
+          }
+        });
+      });
+    }).on('error', err => {
+      this.log(err.message, 'err');
+      console.log(err.message);
+    });
+  }
+
+  /**
+   * Generate file containing JSON UI Schema.
+   * @param path {string} : Path to which the file will be saved.
+   * @param jsonSchema {any} : Valid JSON Schema to generate the UI Schema from.
+   * @param callback {function} : Callback to pass informational message.
+   */
+  generateJSONUISchemaFile = (path: string, jsonSchema: any, callback: (err?: string) => void) => {
+    // Validate if content is valid JSON
+    this.validateJSONSchema(jsonSchema, (validateError?: string) => {
+      if (validateError) {
+        this.log(validateError);
+        return;
+      }
+      // Generate UI Schema
+      const jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
+      // Generate file inside project
+      writeFile(path, JSON.stringify(jsonUISchema, null, 2), 'utf-8', error => {
+          if (error.message) {
+            this.log(error.message);
+            return;
+          }
+          this.log('Successfully generated the UI Schema file!');
+        }
+      );
+    });
+  }
+
+  /**
+   * Validate a given JSON Schema
+   * @param {string} path path to the json schema file
+   * @param {function} callback forwards the current status to the caller
+   */
+  validateJSONSchema = (schema: Object, callback: (err?: string) => void) => {
+    const ajv = new Ajv();
+    try {
+      ajv.compile(schema);
+      this.log();
+    } catch (error) {
+      this.log(error.message);
+    }
   }
 }
 
