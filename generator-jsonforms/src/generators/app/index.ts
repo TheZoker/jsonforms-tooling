@@ -10,8 +10,6 @@ const figlet = require('figlet');
 const validate = require('validate-npm-package-name');
 import { join, sep } from 'path';
 import { readFile, writeFile } from 'fs';
-import { URL } from 'url';
-import { get } from 'https';
 
 enum ProjectRepo {
   Basic = 'jsonforms-basic-project',
@@ -30,7 +28,7 @@ export class JsonformsGenerator extends Generator {
   project: string;
   repo: string;
   path: string;
-  basicProjectSchemaURL: String;
+  basicProjectSchemaPath: string;
   name: string;
   skipPrompting = false;
   answers: any;
@@ -40,14 +38,14 @@ export class JsonformsGenerator extends Generator {
 
     this.option('project', { type: String } );
     this.option('path', { type: String } );
-    this.option('basicProjectSchemaURL', { type: String } );
+    this.option('basicProjectSchemaPath', { type: String } );
     this.option('name', { type: String } );
     this.option('skipPrompting', { type: Boolean } );
 
     this.project = this.options.project;
     this.repo = '';
     this.path = this.options.path;
-    this.basicProjectSchemaURL = this.options.basicProjectSchemaURL;
+    this.basicProjectSchemaPath = this.options.basicProjectSchemaPath;
     this.name = this.options.name;
     this.skipPrompting = this.options.skipPromting;
 
@@ -107,9 +105,9 @@ export class JsonformsGenerator extends Generator {
           when: (this.path == null)
         },
         {
-          name: 'basicProjectSchemaURL',
+          name: 'basicProjectSchemaPath',
           type: 'input',
-          message: 'Enter the path or URL of schema from which the ui schema will be generated:',
+          message: 'Enter the path of schema from which the ui schema will be generated:',
           default: 'required',
           when: answers => (
             answers.project === ProjectRepo.Basic ||
@@ -155,8 +153,8 @@ export class JsonformsGenerator extends Generator {
       if (this.path == null) {
         this.path = this.answers.path;
       }
-      if (this.basicProjectSchemaURL == null) {
-        this.basicProjectSchemaURL = this.answers.basicProjectSchemaURL;
+      if (this.basicProjectSchemaPath == null) {
+        this.basicProjectSchemaPath = this.answers.basicProjectSchemaPath;
       }
       if (this.name == null || !validate(this.name).validForNewPackages) {
         this.name = this.answers.name;
@@ -194,10 +192,7 @@ export class JsonformsGenerator extends Generator {
     }
 
     if (this.project === Project.Basic) {
-      this.retrieveAndSaveJSONUISchemaFromAPI(
-        this.repo,
-        new URL(this.basicProjectSchemaURL.toString())
-      );
+      this.retrieveAndSaveJSONUISchemaFromAPI(this.repo, this.basicProjectSchemaPath);
     }
 
     process.chdir(this.path);
@@ -211,32 +206,29 @@ export class JsonformsGenerator extends Generator {
    * Function to retrieve OpenAPI definition from endpoint and get the JSON UI Schema
    * from it to save it in JSON format.
    * @param {string} repo the name of the repo that should be cloned.
-   * @param {URL} endpoint to the OpenAPI definition.
+   * @param {string} schemaPath path to the schema file for generating the ui schema.
    */
-  retrieveAndSaveJSONUISchemaFromAPI = (repo: string, endpoint: URL) => {
-    this.log(`Getting endpoint for ${repo} project.`);
-    const reqOptions = {
-      host : endpoint.hostname,
-      path:  endpoint.pathname,
-      json: true,
-      headers: {
-          'content-type': 'text/json'
-      },
-    };
-    get(reqOptions, response => {
-      response.setEncoding('utf-8');
-      response.on('data', schema => {
-        const schemaObj = JSON.parse(schema);
-        const jsonSchema = schemaObj.components.schemas.Applicant;
-        // Construct paths
-        const jsonUISchemaPath = `src${sep}json-ui-schema.json`;
-        // Generate .json file
-        this.log('Generating the UI Schema file...');
-        this.generateJSONUISchemaFile(jsonUISchemaPath, jsonSchema);
-      });
-    }).on('error', err => {
-      this.log(err.message, 'err');
-      console.log(err.message);
+  retrieveAndSaveJSONUISchemaFromAPI = (repo: string, schemaPath: string) => {
+    readFile(schemaPath, 'utf8', (readError, data) => {
+      if ((readError != null) && readError.message) {
+        this.log(chalk.red(readError.message));
+        return;
+      }
+      const jsonSchema = JSON.parse(data);
+      this.log('Saving json schema file into project...');
+      writeFile(
+        `src${sep}json-schema.json`,
+        JSON.stringify(jsonSchema, null, 2),
+        writeError => {
+          if (writeError) {
+            this.log(chalk.red(writeError.message));
+            return;
+          }
+          this.log('Successfully generated the schema file!');
+        }
+      );
+      this.log('Generating the UI Schema file...');
+      this.generateJSONUISchemaFile(`src${sep}json-ui-schema.json`, jsonSchema);
     });
   }
 

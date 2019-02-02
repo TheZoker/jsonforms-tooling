@@ -180,12 +180,12 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
 
         editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
           prompt: 'Label: ',
-          placeHolder: `Enter the URL to retrieve the JSON schema for your ${project} project`,
-        }).then((schemaURL: any) => {
-          showMessage(editorInstance, `Getting definitions for ${project} project: ${schemaURL}`);
+          placeHolder: `Enter the path to retrieve the JSON schema for your ${project} project`,
+        }).then((schemaPath: any) => {
+          showMessage(editorInstance, `Getting definitions for ${project} project: ${schemaPath}`);
 
           showMessage(editorInstance, `Creating ${project} project: ${path}`);
-          cloneAndInstall(editorInstance, project, path, projectName, schemaURL);
+          cloneAndInstall(editorInstance, project, path, projectName, schemaPath);
         });
       }
     }
@@ -199,14 +199,14 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
  * @param {string} url the url to the project repository
  * @param {string} path the path to the project folder
  * @param {string} name the name of the project
- * @param {string} schemaURL the location of the JSON schema definition of the basic project  
+ * @param {string} schemaPath the location of the JSON schema definition of the basic project  
  */
 const cloneAndInstall = (
   editorInstance: any,
   project: string,
   path: string,
   name?: string,
-  schemaURL?: string
+  schemaPath?: string
 ) => {
 
   const env = yeoman.createEnv();
@@ -218,7 +218,7 @@ const cloneAndInstall = (
     const options = {
       'project': project,
       'path': path,
-      'basicProjectSchemaURL': schemaURL,
+      'basicProjectSchemaPath': schemaPath,
       'name': name,
       'skipPrompting': true,
     };
