@@ -1,51 +1,97 @@
+// tslint:disable:no-use-before-declare
+
 import { readFile } from 'fs';
-import { resolveData } from '@jsonforms/core';
 
 const schemaPath = './src/addControl/schema.json';
 const uiSchemaPath = './src/addControl/ui-schema.json';
 
 readFile(schemaPath, 'utf8', (readSchemaError, schemaData) => {
-  if (readSchemaError && readSchemaError.message) {
+  if (readSchemaError.message) {
     console.log(readSchemaError.message);
     return;
   }
 
-  const jsonSchema = JSON.parse(schemaData);
-
   readFile(uiSchemaPath, 'utf8', (readUiSchemaError, uiSchemaData) => {
-    if (readUiSchemaError && readUiSchemaError.message) {
+    if (readUiSchemaError.message) {
       console.log(readUiSchemaError.message);
       return;
     }
 
-    const jsonUISchema = JSON.parse(uiSchemaData);
-
-    addControls(jsonSchema, jsonUISchema);
+    addControls(schemaData, uiSchemaData);
   });
 });
 
-const addControls = (schema: any, uiSchema: any) => {
-  const fields = searchForFields(schema);
+const addControls = (schemaData: any, uiSchemaData: any) => {
+  const parsedSchema = JSON.parse(schemaData);
+  const parsedUiSchema = JSON.parse(uiSchemaData);
+
+  // get all the schema fields
+  const fields: any = [];
+  if (parsedSchema.type !== 'object') {
+    const field = Object.keys(parsedSchema)[0];
+    fields.push(field);
+  } else {
+    getFields(fields, parsedSchema.properties, '');
+  }
   console.log(fields);
-  // console.log(objects);
-  // console.log(uiSchema);
+
+  // get all the uischema controls
+  const controls: any = [];
+  getControls(controls, parsedUiSchema.elements);
+  console.log(controls);
+
+  // compare fields and controls and return missing controls
+  const missingControls = compare(fields, controls);
+  console.log(missingControls);
 };
 
-const searchForFields = (schema: any) => {
-  if (!schema) {
-    return;
-  }
-  const test = resolveData(schema, schema);
-  console.log(test);
-  /* let fields = [];
-  const properties = schema.properties;
-  for(let field in properties) {
-    if (field.type !== 'object') {
-      fields.push(field);
-    } else {
-      searchForFields(field);
+const getFields = (fields: any, schema: any, root: string) => {
+  for (const leaf in schema) {
+    if (schema.hasOwnProperty(leaf)) {
+      const value = schema[leaf];
+      if (value.type === 'object') {
+        getFields(fields, value.properties, leaf);
+      } else {
+        if (root === '') {
+          fields.push(leaf);
+        } else {
+          fields.push(root + '.' + leaf);
+        }
+      }
     }
   }
-  console.log(fields); 
-  return fields;*/
+};
+
+const getControls = (controls: any, uischema: any) => {
+  for (const leaf in uischema) {
+    if (uischema.hasOwnProperty(leaf)) {
+      const value = uischema[leaf];
+      if (value.type !== 'Control') {
+        getControls(controls, value.elements);
+      } else {
+        controls.push(value.scope);
+      }
+    }
+  }
+};
+
+const compare = (fields: any, controls: any): any => {
+  const missingControls = [];
+  for (const field in fields) {
+    if (fields.hasOwnProperty(field)) {
+      const newField = fields[field];
+      let ref = '#';
+      const levels = newField.split('.');
+      for (const level in levels) {
+        if (levels.hasOwnProperty(level)) {
+          const newLevel = levels[level];
+          ref = `${ref}'/properties/'${newLevel}`;
+        }
+      }
+      if (!controls.includes(ref)) {
+        missingControls.push(newField);
+      }
+    }
+  }
+  return missingControls;
 };
