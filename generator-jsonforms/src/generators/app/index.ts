@@ -9,18 +9,22 @@ import { join } from 'path';
 import { readFile, writeFile } from 'fs';
 import { copy } from 'fs-extra';
 import { promisify } from 'util';
+import { URL } from 'url';
+import { get } from 'https';
 const clear = require('clear');
 const validate = require('validate-npm-package-name');
 
 enum ProjectRepo {
   Example = 'make-it-happen-react',
   Seed = 'jsonforms-react-seed',
+  Basic = 'jsonforms-basic-project',
   Scaffolding = 'jsonforms-scaffolding-project',
 }
 
 enum Project {
   Example = 'example',
   Seed = 'seed',
+  Basic = 'basic',
   Scaffolding = 'scaffolding',
 }
 
@@ -60,6 +64,9 @@ export class JsonformsGenerator extends Generator {
       case Project.Seed:
         this.repo = ProjectRepo.Seed;
         break;
+      case Project.Basic:
+        this.repo = ProjectRepo.Basic;
+        break;
       case Project.Scaffolding:
         this.repo = ProjectRepo.Scaffolding;
         break;
@@ -91,6 +98,10 @@ export class JsonformsGenerator extends Generator {
               value: ProjectRepo.Seed
             },
             {
+              name: 'Basic Project',
+              value: ProjectRepo.Basic
+            },
+            {
               name: 'Scaffolding Project',
               value: ProjectRepo.Scaffolding
             },
@@ -101,6 +112,7 @@ export class JsonformsGenerator extends Generator {
             }
             if (this.project !== Project.Example
               && this.project !== Project.Seed
+              && this.project !== Project.Basic
               && this.project !== Project.Scaffolding) {
               return true;
             }
@@ -203,6 +215,10 @@ export class JsonformsGenerator extends Generator {
       }
     }
 
+    if (this.project === Project.Basic) {
+      await this.getSchemaFromAPI(new URL(this.schemaPath));
+    }
+
     if (this.project === Project.Scaffolding) {
       await this.getSchemaFromPath(this.schemaPath);
     }
@@ -239,6 +255,56 @@ export class JsonformsGenerator extends Generator {
     this.log('Successfully generated the schema file!');
     this.log('Generating the UI Schema file...');
     await this.generateUISchema(join(srcPath, 'uischema.json'), jsonSchema);
+  };
+
+  /**
+   * Function to retrieve OpenAPI definition from endpoint and get the JSON UI Schema
+   * from it to save it in JSON format.
+   * @param {URL} endpoint to the OpenAPI definition.
+   */
+  getSchemaFromAPI = async (endpoint: URL) => {
+    this.log(`Getting endpoint for basic project.`);
+    const reqOptions = {
+      host : endpoint.hostname,
+      path:  endpoint.pathname,
+      json: true,
+      headers: {
+        'content-type': 'text/json'
+      },
+    };
+    try {
+      await get(reqOptions, (response: any) => {
+        response.setEncoding('utf-8');
+        response.on('data', async (schema: any) => {
+          this.log('Generating the UI Schema file...');
+          const schemaObj = JSON.parse(schema);
+          const jsonSchema = schemaObj.components.schemas.Applicant;
+          const srcPath = join(this.path, 'src');
+
+          // Create vars.js, schema.json and uischema.json file
+          const obj = `const ENDPOINT = \'${endpoint}\';\nexport default ENDPOINT;`;
+          try {
+            await writeFileWithPromise(join(srcPath, 'vars.js'), obj);
+          } catch (err) {
+            this.log(chalk.red(err.message));
+          }
+          try {
+            const jsonSchemaContent = JSON.stringify(jsonSchema, null, 2);
+            await writeFileWithPromise(join(srcPath, 'schema.json'), jsonSchemaContent);
+          } catch (err) {
+            this.log(chalk.red(err.message));
+            return;
+          }
+          this.log('Successfully generated endpoint!');
+          this.generateUISchema(join(srcPath, 'uischema.json'), jsonSchema);
+        }).on('error', (err: any) => {
+          this.log(chalk.red(err.message));
+        });
+      });
+    } catch (err) {
+      this.log(chalk.red(err.message));
+      return;
+    }
   };
 
   /**

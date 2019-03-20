@@ -33,6 +33,20 @@ export const start = (context: theia.PluginContext) => {
     }
   );
 
+  const createBasicProjectCommandOptions = {
+    id: 'create-basic-project',
+    label: 'JSONForms: Create Basic Project',
+  };
+  const createBasicProjectCommand = theia.commands.registerCommand(
+    createBasicProjectCommandOptions,
+    (args: any) => {
+      if (args === undefined) {
+        args = {fsPath: null};
+      }
+      createProject(theia, args.fsPath, Project.Basic);
+    }
+  );
+
   const createScaffoldingProjectCommandOptions = {
     id: 'create-scaffolding-project',
     label: 'JSONForms: Create Scaffolding Project',
@@ -79,6 +93,7 @@ export const start = (context: theia.PluginContext) => {
 
   context.subscriptions.push(createExampleProjectCommand);
   context.subscriptions.push(createSeedProjectCommand);
+  context.subscriptions.push(createBasicProjectCommand);
   context.subscriptions.push(createScaffoldingProjectCommand);
   context.subscriptions.push(generateUISchemaCommand);
   context.subscriptions.push(showPreviewCommand);

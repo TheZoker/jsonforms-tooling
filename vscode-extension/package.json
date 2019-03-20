@@ -14,6 +14,7 @@
   "activationEvents": [
     "onCommand:extension.createExampleProject",
     "onCommand:extension.createSeedProject",
+    "onCommand:extension.createBasicProject",
     "onCommand:extension.createScaffoldingProject",
     "onCommand:extension.generateUISchema",
     "onCommand:extension.showPreview"
@@ -28,6 +29,10 @@
       {
         "command": "extension.createSeedProject",
         "title": "JSONForms: Create Seed Project"
+      },
+      {
+        "command": "extension.createBasicProject",
+        "title": "JSONForms: Create Basic Project"
       },
       {
         "command": "extension.createScaffoldingProject",
@@ -52,6 +57,11 @@
         {
           "when": "explorerResourceIsFolder",
           "command": "extension.createSeedProject",
+          "group": "jsonforms"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "extension.createBasicProject",
           "group": "jsonforms"
         },
         {

@@ -11,6 +11,7 @@ import { MessageType, readdirWithPromise, showMessage } from './utils';
 export enum Project {
   Example = 'example',
   Seed = 'seed',
+  Basic = 'basic',
   Scaffolding = 'scaffolding'
 }
 
@@ -108,7 +109,7 @@ const asyncCreateProject = async (editorInstance: any, path: string, project: st
   }
   // Ask for schema path (only for scaffolding project)
   let schemaPath = '';
-  if (project === Project.Scaffolding) {
+  if (project === Project.Scaffolding || project === Project.Basic) {
     try {
       schemaPath = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
         prompt: 'Label: ',

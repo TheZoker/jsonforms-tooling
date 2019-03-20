@@ -23,6 +23,16 @@ export const activate = (context: vscode.ExtensionContext) => {
     }
   );
 
+  const createBasicProjectCommand = vscode.commands.registerCommand(
+    'extension.createBasicProject',
+    (args: any) => {
+      if (args === undefined) {
+        args = {fsPath: null};
+      }
+      createProject(vscode, args.fsPath, Project.Basic);
+    }
+  );
+
   const createScaffoldingProjectCommand = vscode.commands.registerCommand(
     'extension.createScaffoldingProject',
     (args: any) => {
@@ -53,6 +63,7 @@ export const activate = (context: vscode.ExtensionContext) => {
 
   context.subscriptions.push(createExampleProjectCommand);
   context.subscriptions.push(createSeedProjectCommand);
+  context.subscriptions.push(createBasicProjectCommand);
   context.subscriptions.push(createScaffoldingProjectCommand);
   context.subscriptions.push(generateUISchemaCommand);
   context.subscriptions.push(showPreviewCommand);

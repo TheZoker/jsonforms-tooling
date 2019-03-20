@@ -24,6 +24,7 @@
     "clear": "^0.1.0",
     "fs-extra": "^7.0.1",
     "figlet": "^1.2.1",
+    "jsonforms-basic-project": "git+https://github.com/eclipsesource/jsonforms-basic-project.git",
     "jsonforms-react-seed": "git+https://github.com/eclipsesource/jsonforms-react-seed.git",
     "jsonforms-scaffolding-project": "git+https://github.com/eclipsesource/jsonforms-scaffolding-project.git",
     "make-it-happen-react": "git+https://github.com/eclipsesource/make-it-happen-react.git",
